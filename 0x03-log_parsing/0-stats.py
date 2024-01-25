@@ -1,45 +1,36 @@
 #!/usr/bin/python3
-
-"""Script that reads stdin line by line and computes metrics"""
+"""script that reads stdin line by line and computes metrics"""
 
 import sys
 
-
-def printsts(dic, size):
-    """Prints information """
-    print("File size: {:d}".format(size))
-    for i in sorted(dic.keys()):
-        if dic[i] != 0:
-            print("{}: {:d}".format(i, dic[i]))
-
-
-sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
-       "404": 0, "405": 0, "500": 0}
-
+code = {'200': 0, '301': 0, '400': 0, '401': 0,
+        '403': 0, '404': 0, '405': 0, '500': 0}
+total_size = 0
 count = 0
-size = 0
 
 try:
     for line in sys.stdin:
-        if count != 0 and count % 10 == 0:
-            printsts(sts, size)
+        line_list = line.split(" ")
+        if len(line_list) > 4:
+            status_code = line_list[-2]
+            size = int(line_list[-1])
+            if status_code in code.keys():
+                code[status_code] += 1
+            total_size += size
+            count += 1
 
-        stlist = line.split()
-        count += 1
+        if count == 10:
+            count = 0
+            print('File size: {}'.format(total_size))
+            for key, value in sorted(code.items()):
+                if value != 0:
+                    print('{}: {}'.format(key, value))
 
-        try:
-            size += int(stlist[-1])
-        except Exception:
-            pass
+except Exception as err:
+    pass
 
-        try:
-            if stlist[-2] in sts:
-                sts[stlist[-2]] += 1
-        except Exception:
-            pass
-    printsts(sts, size)
-
-
-except KeyboardInterrupt:
-    printsts(sts, size)
-    raise
+finally:
+    print('File size: {}'.format(total_size))
+    for key, value in sorted(code.items()):
+        if value != 0:
+            print('{}: {}'.format(key, value))
