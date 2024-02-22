@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """rotate 2D matrix"""
 
 
 def rotate_2d_matrix(matrix):
     """rotate 2D matrix in-place 90 degrees clockwise"""
-   
+
     left, right = 0, len(matrix) - 1
 
     while left < right:
